@@ -31,9 +31,7 @@ class WatermarkGenerator:
 
         logger.info(f"Loading {model_name} on {self.device} ({self.dtype})")
         self.tokenizer: PreTrainedTokenizerBase = AutoTokenizer.from_pretrained(model_name)
-        model: PreTrainedModel = AutoModelForCausalLM.from_pretrained(
-            model_name, dtype=self.dtype
-        )
+        model: PreTrainedModel = AutoModelForCausalLM.from_pretrained(model_name, dtype=self.dtype)
         model.to(torch.device(self.device))  # type: ignore[arg-type]
         model.eval()  # type: ignore[no-untyped-call]
         self.model = model
