@@ -1233,7 +1233,7 @@ requires-dist = [
     { name = "sentencepiece", marker = "extra == 'attacks'", specifier = ">=0.2" },
     { name = "torch", specifier = ">=2.2" },
     { name = "tqdm", specifier = ">=4.66" },
-    { name = "transformers", specifier = ">=4.40" },
+    { name = "transformers", specifier = ">=4.50" },
     { name = "typer", specifier = ">=0.12" },
 ]
 
