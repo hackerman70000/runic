@@ -43,6 +43,24 @@ runic detect facebook/opt-125m "<text or path/to/file.txt>"
 runic attack <text or path/to/file.txt> --budget 0.1 --replacement-model t5-small
 ```
 
+## Live test
+
+OPT-125m on CUDA, prompt `"The history of cryptography began with"`,
+T5-small as the span-replacement attacker, single 200-token completion
+(actual length 40 tokens after early stop). Detection threshold z = 4.0.
+
+| Budget       | z-score | p-value   | flagged |
+|--------------|---------|-----------|---------|
+| 0.00 (clean) | 5.639   | 8.5e-09   | yes     |
+| 0.10         | 3.385   | 3.6e-04   | no      |
+| 0.30         | 2.141   | 0.016     | no      |
+| 0.50         | 2.132   | 0.017     | no      |
+
+10% perturbation is already enough to push z below threshold on this
+short generation. Paper §4.2 notes that T < 128 tokens has high
+type-II error rates by design — at full T=200 with batched evaluation
+(paper Tab. 2) AUC stays near 0.95 up to ε=0.3.
+
 ## What it does
 
 - `WatermarkConfig` — gamma, delta, hash_key, z_threshold.
