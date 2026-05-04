@@ -28,6 +28,7 @@ dev = [
 attacks = [
     "sentencepiece>=0.2",
 ]
+plotting = ["matplotlib>=3.7"]
 
 [project.scripts]
 runic = "runic.cli.main:app"
@@ -52,6 +53,7 @@ ignore = ["PLR0913", "PLR2004"]
 "tests/*" = ["PLR2004", "PLC0415"]
 "experiments/*" = ["T201"]
 "src/runic/cli/*" = ["B008"]
+"src/runic/utils/plotting.py" = ["PLC0415"]
 
 [tool.mypy]
 python_version = "3.11"
