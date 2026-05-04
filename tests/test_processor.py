@@ -57,3 +57,29 @@ def test_processor_with_empty_input_returns_unchanged():
     scores = torch.randn(1, 10)
     out = proc(input_ids, scores)
     assert torch.equal(out, scores)
+
+
+def test_processor_handles_padded_model_output_dim():
+    """OPT-style: model output dim > tokenizer vocab. Mask must zero-pad."""
+    cfg = WatermarkConfig(gamma=0.5, delta=2.0, hash_key=7)
+    tokenizer_vocab = 50
+    proc = WatermarkLogitsProcessor(cfg, vocab_size=tokenizer_vocab)
+
+    input_ids = torch.tensor([[10]])
+    scores = torch.zeros(1, tokenizer_vocab + 7)
+    biased = proc(input_ids, scores)
+
+    assert biased.shape == (1, tokenizer_vocab + 7)
+    # The padding tokens must not receive any green-list bias.
+    assert torch.all(biased[0, tokenizer_vocab:] == 0)
+
+
+def test_processor_handles_undersized_score_tensor():
+    """Defensive: if scores is smaller than vocab_size, mask is truncated."""
+    cfg = WatermarkConfig(gamma=0.5, delta=2.0)
+    proc = WatermarkLogitsProcessor(cfg, vocab_size=100)
+
+    input_ids = torch.tensor([[5]])
+    scores = torch.zeros(1, 80)
+    biased = proc(input_ids, scores)
+    assert biased.shape == (1, 80)
